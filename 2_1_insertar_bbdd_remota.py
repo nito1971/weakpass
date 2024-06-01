@@ -28,10 +28,10 @@ def insertar_db_mysql(contra):
 
     
     db = mysql.connector.connect(
-        host="localhost",
-        port=33061,
-        user="root",
-        password="Alcanfor_1971",
+        host="10.0.0.12",
+        port=3306,
+        user="usuario_escritura",
+        password="Mrsmi_2024",
         database="contras" )   
 
  
