@@ -22,33 +22,32 @@ def numero_archivos():
 ###################################################################
 ###################################################################
 
-def insertar_mysql(usuario, passwd_text):    
-    # Conexión a la base de datos MySQL
+
+def insertar_mysql(contra):
+    # Configuración de la conexión a la base de datos
+    cnx = mysql.connector.connect(
+        user='usuario_escritura',
+        password='Mrsmi_2024',
+        host='10.0.0.12',
+        database='contras'
+    )
+
+    cursor = cnx.cursor()
+
+    # Sentencia SQL para insertar los valores en la tabla contras
+    sql = "INSERT INTO contras (contra) VALUES (%s)"
+
     try:
-        conexion = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            passwd='Alcanfor_1971',
-            database='contras'
-        )
-
-        cursor = conexion.cursor()
-
-        # Crear la consulta SQL para insertar datos
-        consulta = f"INSERT INTO rockyou(usuario, passwd_text) VALUES (%s, %s)"
-
-        # Ejecutar la consulta SQL
-        try:
-            cursor.execute(consulta, (usuario, passwd_text))
-            conexion.commit()
-            #print(f"Los datos correspondientes han sido insertados correctamente.")
-            conexion.close()
-        except Error as e:
-            #print(f"Ocurrió un error al insertar los datos: {e}")
-            conexion.rollback()  # Revierte en caso de error
-    except Error as e:
-        #print(f"Ocurrió un error al conectar a MySQL: {e}")
-        pass
+        # Ejecutar la sentencia SQL con los valores pasados como argumento
+        cursor.execute(sql, (contra))
+        cnx.commit()
+        print("Registro insertado correctamente")
+    except mysql.connector.Error as err:
+        print(f"Error al insertar el registro: {err}")
+    finally:
+        # Cerrar la conexión y el cursor
+        cursor.close()
+        cnx.close()
 
 ###################################################################
 ###################################################################
@@ -56,7 +55,7 @@ def insertar_mysql(usuario, passwd_text):
 def insert_mongo(_id):
     try:
       # Conexión a la base de datos local
-      cliente = pymongo.MongoClient("mongodb://localhost:27019")
+      cliente = pymongo.MongoClient("mongodb://10.0.100:27017")
       # Seleccionar la base de datos y la colección
       db = cliente["contras"]
       coleccion = db["contras"]
@@ -94,8 +93,10 @@ def inicio(hilo):
                 for linea in f:
                     linea_a_hashear = linea.rstrip("\n")                    
                     _id = linea_a_hashear                   
-                    datos = linea_a_hashear              
-                    insert_mongo(_id)
+                    datos = linea_a_hashear 
+                    contra = _id             
+                    #insert_mongo(_id)
+                    insertar_mysql(contra)
                     #print(f"Usuario: {usuario} - Passwd: {passwd}")
                                
                 os.remove(ruta_archivo)                
